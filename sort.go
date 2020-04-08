@@ -7,6 +7,7 @@ import (
 	"sync"
 )
 
+// MyMergeSort provides a multi-way merge sort algorithm
 func MyMergeSort(arr []data) {
 	shard := runtime.NumCPU()
 	if len(arr) < shard {

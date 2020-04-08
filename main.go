@@ -15,7 +15,7 @@ import (
 
 var (
 	clientNums    = 3
-	messageNums   = 10
+	messageNums   = 100
 	dataStreaming []chan data
 
 	token int64
@@ -28,12 +28,7 @@ var (
 
 	debug            = false
 	enabledRateLimit = true
-	Rate             = time.Second / 100
-)
-
-const (
-	Prepare = "prepare"
-	Commit  = "commit"
+	rate             = time.Second / 100
 )
 
 type data struct {
@@ -83,7 +78,7 @@ func collectAndSort() {
 	go func() {
 		if enabledRateLimit {
 			defer throttle.Stop()
-			throttle = time.NewTicker(Rate)
+			throttle = time.NewTicker(rate)
 		}
 
 		for {
@@ -93,7 +88,7 @@ func collectAndSort() {
 				}
 				data := <-c
 				// 过滤出Commit的数据
-				if data.kind == Commit {
+				if data.kind == "commit" {
 					dataChan <- data
 				}
 			}
@@ -126,7 +121,7 @@ func generateDatas(index int) {
 		sleep(maxSleepInterval)
 
 		dataStreaming[index] <- data{
-			kind:    Prepare,
+			kind:    "prepare",
 			prepare: prepare,
 		}
 		sleep(maxSleepInterval)
@@ -135,7 +130,7 @@ func generateDatas(index int) {
 		sleep(maxSleepInterval)
 
 		dataStreaming[index] <- data{
-			kind:    Commit,
+			kind:    "commit",
 			prepare: prepare,
 			commit:  commit,
 		}
