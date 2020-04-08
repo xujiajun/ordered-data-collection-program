@@ -1,4 +1,4 @@
-# ordered data collection program [![Go Report Card](https://goreportcard.com/badge/github.com/xujiajun/ordered-data-collection-program)](https://goreportcard.com/report/github.com/xujiajun/ordered-data-collection-program)
+# ordered data collection program
 
 ### 系统描述
 一个系统包含多个数据生产者，每个数据生产者都会不停的生产数据，并且生产者会为每个 data 发送两条 messages
@@ -158,7 +158,6 @@ go test -bench=.
 ### 参考资料
 
 * https://xargin.com/talent-plan-week1-solution/
-* https://github.com/Deardrops/pingcapAssignment
 * https://github.com/golang/go/wiki/RateLimiting
 * https://lrita.github.io/2017/05/26/golang-memory-pprof/
 * https://segmentfault.com/a/1190000016412013
