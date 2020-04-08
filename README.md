@@ -82,6 +82,35 @@ PASS
 
 这边使用按照go wiki 上提到的方法，使用time.Ticker简单实现就可满足需求。
 
+用`go tool pprof -alloc_space` 查看内存分配情况
+
+#### 没有限流前
+```
+(pprof) top
+Showing nodes accounting for 2873.12kB, 100% of 2873.12kB total
+      flat  flat%   sum%        cum   cum%
+ 2311.62kB 80.46% 80.46%  2311.62kB 80.46%  main.collectAndSort
+  561.50kB 19.54%   100%   561.50kB 19.54%  main.init.0
+         0     0%   100%  2311.62kB 80.46%  main.main.func3
+         0     0%   100%   561.50kB 19.54%  runtime.doInit
+         0     0%   100%   561.50kB 19.54%  runtime.main
+```
+
+#### 使用限流后
+```
+(pprof) top
+Showing nodes accounting for 516.01kB, 100% of 516.01kB total
+      flat  flat%   sum%        cum   cum%
+  516.01kB   100%   100%   516.01kB   100%  main.collectAndSort
+         0     0%   100%   516.01kB   100%  main.main.func3
+         
+```
+
+很明显，使用限流后 `main.collectAndSort` 内存分配少了很多。
+
+这边还可以使用`github.com/mkevac/debugcharts`这个库可以实时（每s）看到内存使用和CPU的使用情况
+
+
 先看下没做流控的时候的内存分配和CPU使用情况：
 
 ![image](https://user-images.githubusercontent.com/6065007/78770857-c9d43c80-79c1-11ea-9b93-547e2918143b.png)
@@ -96,7 +125,8 @@ PASS
 ![image](https://user-images.githubusercontent.com/6065007/78771177-554dcd80-79c2-11ea-9628-a2047f835e82.png)
 
 
-> 结论是流控对单位时间CPU使用和内存分配都作了限制。对系统起到了保护的作用。
+#### 结论
+流控对单位时间CPU使用和内存分配都作了限制。对系统起到了保护的作用。
 
 
 ## 使用指南
@@ -130,3 +160,5 @@ go test -bench=.
 * https://xargin.com/talent-plan-week1-solution/
 * https://github.com/Deardrops/pingcapAssignment
 * https://github.com/golang/go/wiki/RateLimiting
+* https://lrita.github.io/2017/05/26/golang-memory-pprof/
+* https://segmentfault.com/a/1190000016412013
