@@ -23,7 +23,9 @@
 首先方案1和方案2可以合并，标准库已经封装了归并排序、堆排序和快速排序等，sort包会根据实际数据自动选择高效的排序算法。
 
 方案3用一些其他算法，需要更快，需要用到多线程，利用多核，但是并发的程序对于排序这种计算密集型，还要考虑到同步等问题，不一定会快，反而会变慢，
-实际测试中，也发现还不如用单线程的排序算法。最后我选择多路归并排序算法。算法思路：
+实际测试中，也发现还不如用单线程的排序算法。最后我选择多路归并排序算法实现`MyMergeSort`。
+
+算法思路：
 * 1、先收集各个数据生产者的数据
 * 2、根据CPU核数做数据切分分成N个shard，开对应数量goroutine去并发并行的执行sort
 * 3、把各个shard收集起来，push到最小堆（按照每个shard的首部元素作为比较对象），这样保证堆顶的元素首位元素是最小的，把这个值加到结果集，更新这个slice的Idx。
@@ -43,7 +45,7 @@ BenchmarkNormalSort-8    	       1	7350065377 ns/op
 PASS
 ```
 
-MyMergeSort算法比标准库的sort.Slice快了近2倍，就速度而言效果还是很好的。
+`MyMergeSort`算法比标准库的sort.Slice快了近2倍，就速度而言效果还是很好的。
 
 
 再看下实际接受方收到1w条数据（5个client，发送2*1000）之后的排序时间：
@@ -59,9 +61,9 @@ MyMergeSort算法比标准库的sort.Slice快了近2倍，就速度而言效果�
 3.036942ms
 ```
 
-结论标准库的sort.Slice 大概在3ms上下波动。
+结论使用标准库的sort.Slice排序大概在3ms上下波动。
 
-用MyMergeSort算法，执行几次：
+用`MyMergeSort`算法，执行几次：
 
 ```
 1.941394ms
@@ -72,7 +74,7 @@ MyMergeSort算法比标准库的sort.Slice快了近2倍，就速度而言效果�
 1.955708ms
 1.869308ms
 ```
-结论标准库的MyMergeSort大概在2ms上下波动。
+结论使用`MyMergeSort`算法排序大概在2ms上下波动。
 
 以上说明就这个作业的发送1w条数据的场景中`MyMergeSort`还是比`sort.Slice`快的。
 
@@ -82,10 +84,19 @@ MyMergeSort算法比标准库的sort.Slice快了近2倍，就速度而言效果�
 
 先看下没做流控的时候的内存分配和CPU使用情况：
 
+![image](https://user-images.githubusercontent.com/6065007/78770857-c9d43c80-79c1-11ea-9b93-547e2918143b.png)
+
+![image](https://user-images.githubusercontent.com/6065007/78771015-0e5fd800-79c2-11ea-91b0-774f6362893c.png)
 
 
 再看下做了流控的时候的内存分配和CPU使用情况：
 
+![image](https://user-images.githubusercontent.com/6065007/78771123-3e0ee000-79c2-11ea-9447-bcc0e0fe32c8.png)
+
+![image](https://user-images.githubusercontent.com/6065007/78771177-554dcd80-79c2-11ea-9628-a2047f835e82.png)
+
+
+> 结论是流控对单位时间CPU使用和内存分配都作了限制。对系统起到了保护的作用。
 
 
 ## 使用指南
