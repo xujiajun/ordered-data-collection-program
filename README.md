@@ -1,4 +1,4 @@
-# ordered data collection program [![Go Report Card](https://goreportcard.com/badge/github.com/xujiajun/ordered-data-collection-program)](https://goreportcard.com/report/github.com/xujiajun/ordered-data-collection-program)
+# ordered data collection program [![Go Report Card](https://goreportcard.com/badge/github.com/xujiajun/ordered-data-collection-program)](https://goreportcard.com/report/github.com/xujiajun/ordered-data-collection-program) [![Build Status](https://travis-ci.org/xujiajun/ordered-data-collection-program.svg?branch=master)](https://travis-ci.org/xujiajun/ordered-data-collection-program)
 
 ### 系统描述
 一个系统包含多个数据生产者，每个数据生产者都会不停的生产数据，并且生产者会为每个 data 发送两条 messages
